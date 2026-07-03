@@ -1,0 +1,16 @@
+# Mac
+.DS_Store
+
+# Backend (Spring Boot / Maven)
+target/
+*.log
+.idea/
+*.iml
+.mvn/wrapper/maven-wrapper.jar
+
+# Frontend (React)
+node_modules/
+dist/
+build/
+.env
+
