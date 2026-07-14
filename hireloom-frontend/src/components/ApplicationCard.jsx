@@ -1,4 +1,9 @@
-function ApplicationCard({ app, getStatusColor }) {
+function ApplicationCard({
+    app,
+    getStatusColor,
+    handleDeleteApplication,
+    handleEditApplication,
+}) {
     return (
       <div className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition">
         <div className="flex justify-between items-start mb-4">
@@ -35,6 +40,22 @@ function ApplicationCard({ app, getStatusColor }) {
               {app.notes}
             </p>
           )}
+
+            <div className="flex justify-end gap-2 mt-4">
+                <button
+                    onClick={() => handleEditApplication(app)}
+                    className="bg-yellow-500 hover:bg-yellow-600 transition text-white px-3 py-2 rounded-lg text-sm"
+                >
+                    Edit
+                </button>
+
+                <button
+                    onClick={() => handleDeleteApplication(app.id)}
+                    className="bg-red-500 hover:bg-red-600 transition text-white px-3 py-2 rounded-lg text-sm"
+                >
+                    Delete
+                </button>
+            </div>
         </div>
       </div>
     );

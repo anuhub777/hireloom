@@ -18,6 +18,14 @@ function DashboardPage({
   setEmail,
   setPassword,
   getStatusColor,
+  handleDeleteApplication,
+  handleEditApplication,
+  editingApplication,
+  setEditingApplication,
+  searchTerm,
+  setSearchTerm,
+  statusFilter,
+  setStatusFilter,
 }) {
   return (
     <div className="min-h-screen bg-slate-100">
@@ -28,10 +36,31 @@ function DashboardPage({
       />
 
       <main className="p-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">
-            Dashboard
-          </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">
+          Dashboard
+        </h2>
+
+        <div className="flex gap-3">
+          <input
+            type="text"
+            placeholder="🔍 Search company..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border rounded-lg px-4 py-2 w-72"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border rounded-lg px-4 py-2"
+          >
+            <option value="ALL">All Status</option>
+            <option value="APPLIED">Applied</option>
+            <option value="OA">OA</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="OFFER">Offer</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
 
           <button
             onClick={() => setShowAddForm(true)}
@@ -40,6 +69,7 @@ function DashboardPage({
             + Add Application
           </button>
         </div>
+      </div>
 
         <StatsCards
           appliedCount={appliedCount}
@@ -55,10 +85,12 @@ function DashboardPage({
             </div>
           ) : (
             applications.map((app) => (
-              <ApplicationCard
+                <ApplicationCard
                 key={app.id}
                 app={app}
                 getStatusColor={getStatusColor}
+                handleDeleteApplication={handleDeleteApplication}
+                handleEditApplication={handleEditApplication}
               />
             ))
           )}

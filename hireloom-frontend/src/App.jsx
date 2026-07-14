@@ -4,6 +4,8 @@ import {
   registerUser,
   getAllApplications,
   createApplication,
+  deleteApplication,
+  updateApplication,
 } from "./services/api";
 
 import LoginPage from "./pages/LoginPage";
@@ -16,12 +18,16 @@ function App() {
   const [password, setPassword] = useState("");
 
   const [applications, setApplications] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingApplication, setEditingApplication] = useState(null);
 
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("token")
   );
+  
 
   const [isRegistering, setIsRegistering] = useState(false);
 
@@ -34,6 +40,19 @@ function App() {
     jobUrl: "",
     appliedDate: "",
     notes: "",
+  });
+
+  const filteredApplications = applications.filter((app) => {
+    const search = searchTerm.toLowerCase();
+  
+    const matchesSearch =
+      app.companyName.toLowerCase().includes(search) ||
+      app.role.toLowerCase().includes(search);
+  
+    const matchesStatus =
+      statusFilter === "ALL" || app.status === statusFilter;
+  
+    return matchesSearch && matchesStatus;
   });
 
   const handleLogin = async () => {
@@ -77,12 +96,19 @@ function App() {
     }
   };
 
+  
+
   const handleSaveApplication = async () => {
     try {
-      await createApplication(formData);
-
+      if (editingApplication) {
+        await updateApplication(editingApplication.id, formData);
+      } else {
+        await createApplication(formData);
+      }
+  
       setShowAddForm(false);
-
+      setEditingApplication(null);
+  
       setFormData({
         companyName: "",
         role: "",
@@ -93,11 +119,43 @@ function App() {
         appliedDate: "",
         notes: "",
       });
-
+  
       fetchApplications();
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleDeleteApplication = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this application?"
+    );
+  
+    if (!confirmDelete) return;
+  
+    try {
+      await deleteApplication(id);
+      fetchApplications();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEditApplication = (application) => {
+    setEditingApplication(application);
+  
+    setFormData({
+      companyName: application.companyName,
+      role: application.role,
+      status: application.status,
+      location: application.location,
+      salary: application.salary,
+      jobUrl: application.jobUrl,
+      appliedDate: application.appliedDate,
+      notes: application.notes || "",
+    });
+  
+    setShowAddForm(true);
   };
 
   useEffect(() => {
@@ -142,7 +200,7 @@ function App() {
   if (isLoggedIn) {
     return (
       <DashboardPage
-        applications={applications}
+        applications={filteredApplications}
         appliedCount={appliedCount}
         oaCount={oaCount}
         interviewCount={interviewCount}
@@ -156,6 +214,14 @@ function App() {
         setEmail={setEmail}
         setPassword={setPassword}
         getStatusColor={getStatusColor}
+        handleDeleteApplication={handleDeleteApplication}
+        editingApplication={editingApplication}
+        setEditingApplication={setEditingApplication}
+        handleEditApplication={handleEditApplication}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
       />
     );
   }

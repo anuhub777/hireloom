@@ -4,15 +4,17 @@ function AddApplicationModal({
     formData,
     setFormData,
     handleSaveApplication,
+    editingApplication,
+    setEditingApplication,
   }) {
     if (!showAddForm) return null;
   
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl shadow-xl p-8 w-[600px] max-h-[90vh] overflow-y-auto">
-          <h2 className="text-2xl font-bold mb-6">
-            Add Application
-          </h2>
+        <h2 className="text-2xl font-bold mb-6">
+            {editingApplication ? "Edit Application" : "Add Application"}
+        </h2>
   
           <div className="space-y-4">
             <input
@@ -125,7 +127,10 @@ function AddApplicationModal({
   
           <div className="flex justify-end gap-3 mt-6">
             <button
-              onClick={() => setShowAddForm(false)}
+              onClick={() => {
+                setShowAddForm(false);
+                setEditingApplication(null);
+              }}
               className="bg-gray-500 hover:bg-gray-600 transition text-white px-4 py-2 rounded-lg"
             >
               Cancel
@@ -135,7 +140,7 @@ function AddApplicationModal({
               onClick={handleSaveApplication}
               className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg"
             >
-              Save
+              {editingApplication ? "Update" : "Save"}
             </button>
           </div>
         </div>

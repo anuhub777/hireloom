@@ -45,3 +45,32 @@ export const createApplication = async (applicationData) => {
   
     return response.data;
 };
+
+export const deleteApplication = async (id) => {
+    const token = localStorage.getItem("token");
+  
+    await axios.delete(
+      `http://localhost:9090/api/applications/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
+
+  export const updateApplication = async (id, applicationData) => {
+    const token = localStorage.getItem("token");
+  
+    const response = await axios.put(
+      `http://localhost:9090/api/applications/${id}`,
+      applicationData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  
+    return response.data;
+  };
