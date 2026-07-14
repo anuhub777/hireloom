@@ -11,6 +11,8 @@ import {
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
+import { toast } from "react-toastify";
+import DeleteConfirmationModal from "./components/DeleteConfirmationModal";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -20,6 +22,9 @@ function App() {
   const [applications, setApplications] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [applicationToDelete, setApplicationToDelete] = useState(null);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingApplication, setEditingApplication] = useState(null);
@@ -64,6 +69,7 @@ function App() {
 
       localStorage.setItem("token", response.token);
       setIsLoggedIn(true);
+      toast.success("Welcome back!");
     } catch (error) {
       console.error(error);
     }
@@ -82,6 +88,7 @@ function App() {
       setName("");
       setEmail("");
       setPassword("");
+      toast.success("Account created successfully!");
     } catch (error) {
       console.error(error);
     }
@@ -101,9 +108,11 @@ function App() {
   const handleSaveApplication = async () => {
     try {
       if (editingApplication) {
-        await updateApplication(editingApplication.id, formData);
+          await updateApplication(editingApplication.id, formData);
+          toast.success("Application updated successfully!");
       } else {
-        await createApplication(formData);
+          await createApplication(formData);
+          toast.success("Application added successfully!");
       }
   
       setShowAddForm(false);
@@ -126,15 +135,20 @@ function App() {
     }
   };
 
-  const handleDeleteApplication = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this application?"
-    );
-  
-    if (!confirmDelete) return;
-  
+  const handleDeleteApplication = (id) => {
+    setApplicationToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
     try {
-      await deleteApplication(id);
+      await deleteApplication(applicationToDelete);
+  
+      toast.success("Application deleted successfully!");
+  
+      setShowDeleteModal(false);
+      setApplicationToDelete(null);
+  
       fetchApplications();
     } catch (error) {
       console.error(error);
@@ -199,6 +213,7 @@ function App() {
 
   if (isLoggedIn) {
     return (
+    <>
       <DashboardPage
         applications={filteredApplications}
         appliedCount={appliedCount}
@@ -223,6 +238,15 @@ function App() {
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
       />
+      <DeleteConfirmationModal
+        show={showDeleteModal}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setApplicationToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+      />
+    </>
     );
   }
 
