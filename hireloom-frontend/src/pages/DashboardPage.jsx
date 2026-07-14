@@ -1,0 +1,79 @@
+import Navbar from "../components/Navbar";
+import StatsCards from "../components/StatsCards";
+import ApplicationCard from "../components/ApplicationCard";
+import AddApplicationModal from "../components/AddApplicationModal";
+
+function DashboardPage({
+  applications,
+  appliedCount,
+  oaCount,
+  interviewCount,
+  offerCount,
+  showAddForm,
+  setShowAddForm,
+  formData,
+  setFormData,
+  handleSaveApplication,
+  setIsLoggedIn,
+  setEmail,
+  setPassword,
+  getStatusColor,
+}) {
+  return (
+    <div className="min-h-screen bg-slate-100">
+      <Navbar
+        setIsLoggedIn={setIsLoggedIn}
+        setEmail={setEmail}
+        setPassword={setPassword}
+      />
+
+      <main className="p-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">
+            Dashboard
+          </h2>
+
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg font-semibold"
+          >
+            + Add Application
+          </button>
+        </div>
+
+        <StatsCards
+          appliedCount={appliedCount}
+          oaCount={oaCount}
+          interviewCount={interviewCount}
+          offerCount={offerCount}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {applications.length === 0 ? (
+            <div className="bg-white rounded-xl shadow p-6">
+              No applications yet.
+            </div>
+          ) : (
+            applications.map((app) => (
+              <ApplicationCard
+                key={app.id}
+                app={app}
+                getStatusColor={getStatusColor}
+              />
+            ))
+          )}
+        </div>
+
+        <AddApplicationModal
+          showAddForm={showAddForm}
+          setShowAddForm={setShowAddForm}
+          formData={formData}
+          setFormData={setFormData}
+          handleSaveApplication={handleSaveApplication}
+        />
+      </main>
+    </div>
+  );
+}
+
+export default DashboardPage;
