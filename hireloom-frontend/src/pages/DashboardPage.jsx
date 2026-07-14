@@ -78,7 +78,7 @@ function DashboardPage({
           offerCount={offerCount}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {applications.length === 0 ? (
             <div className="bg-white rounded-xl shadow p-6">
               No applications yet.
