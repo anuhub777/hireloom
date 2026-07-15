@@ -194,6 +194,10 @@ function App() {
     (app) => app.status === "OFFER"
   ).length;
 
+  const rejectedCount = applications.filter(
+    (app) => app.status === "REJECTED"
+  ).length;
+
   const getStatusColor = (status) => {
     switch (status) {
       case "APPLIED":
@@ -220,6 +224,7 @@ function App() {
         oaCount={oaCount}
         interviewCount={interviewCount}
         offerCount={offerCount}
+        rejectedCount={rejectedCount}
         showAddForm={showAddForm}
         setShowAddForm={setShowAddForm}
         formData={formData}

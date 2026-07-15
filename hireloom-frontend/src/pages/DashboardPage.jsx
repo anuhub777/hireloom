@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import StatsCards from "../components/StatsCards";
 import ApplicationCard from "../components/ApplicationCard";
 import AddApplicationModal from "../components/AddApplicationModal";
+import StatusPieChart from "../components/charts/StatusPieChart";
 
 function DashboardPage({
   applications,
@@ -9,6 +10,7 @@ function DashboardPage({
   oaCount,
   interviewCount,
   offerCount,
+  rejectedCount,
   showAddForm,
   setShowAddForm,
   formData,
@@ -77,6 +79,16 @@ function DashboardPage({
           interviewCount={interviewCount}
           offerCount={offerCount}
         />
+
+        <div className="mt-6">
+            <StatusPieChart
+                appliedCount={appliedCount}
+                oaCount={oaCount}
+                interviewCount={interviewCount}
+                offerCount={offerCount}
+                rejectedCount={rejectedCount}
+            />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {applications.length === 0 ? (
