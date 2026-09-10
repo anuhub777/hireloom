@@ -6,6 +6,7 @@ import com.anubhav.hireloom_backend.entity.User;
 import com.anubhav.hireloom_backend.enums.ApplicationStatus;
 import com.anubhav.hireloom_backend.repository.ApplicationRepository;
 import com.anubhav.hireloom_backend.repository.UserRepository;
+import com.anubhav.hireloom_backend.exception.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class ApplicationService {
                 .getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         application.setUser(user);
 
@@ -52,7 +53,7 @@ public class ApplicationService {
                 .getName();
 
         return applicationRepository.findByIdAndUserEmail(id,email)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
     }
 
     public Application updateApplication(Long id, Application updatedApplication) {
@@ -61,7 +62,7 @@ public class ApplicationService {
                 .getName();
         Application existing = applicationRepository
                 .findByIdAndUserEmail(id,email)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
 
         existing.setCompanyName(updatedApplication.getCompanyName());
         existing.setRole(updatedApplication.getRole());
@@ -81,7 +82,7 @@ public class ApplicationService {
                 .getName();
         Application application = applicationRepository
                 .findByIdAndUserEmail(id, email)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
         applicationRepository.delete(application);
     }
 

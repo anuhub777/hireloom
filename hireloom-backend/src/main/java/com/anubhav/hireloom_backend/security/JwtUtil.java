@@ -5,32 +5,39 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private static final String SECRET = "mySuperSecretKeyForHireLoomJwtSigning123456";
+    private final SecretKey key;
+    private final long expirationMs;
 
-    private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+    public JwtUtil(
+            @Value("${app.jwt.secret:mySuperSecretKeyForHireLoomJwtSigning12345678901234567890}") String secret,
+            @Value("${app.jwt.expiration-ms:86400000}") long expirationMs
+    ) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.expirationMs = expirationMs;
+    }
 
     public String generateToken(String email) {
-
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*60*24)) //24 hrs valid
-                .signWith(KEY)
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(key)
                 .compact();
     }
 
     public String extractEmail(String token) {
-
         Jws<Claims> claims = Jwts.parser()
-                .verifyWith(KEY)
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token);
 
@@ -38,14 +45,13 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token) {
-        try{
+        try {
             Jwts.parser()
-                    .verifyWith(KEY)
+                    .verifyWith(key)
                     .build()
                     .parseSignedClaims(token);
             return true;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }

@@ -48,9 +48,14 @@ public class UserController {
         String token = userService.loginUser(
                 request.getEmail(),
                 request.getPassword()
-        );
+        );  
 
         return new LoginResponse(token);
+    }
+
+    @GetMapping("/api/users/me")
+    public UserResponse getCurrentUser(java.security.Principal principal) {
+        return userService.getCurrentUser(principal.getName());
     }
 
     @GetMapping("/api/test")
@@ -59,3 +64,4 @@ public class UserController {
     }
 
 }
+
